@@ -1,7 +1,9 @@
 # Scrapy - table = response.xpath("//*[@id='proxylisttable']//tbody//tr[0]//td//text()")[0].extract()
-def proxyScrap():
+def proxyScrap(*args):
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
+    import joblib
+    from joblib import Parallel, delayed
 
     options = Options()
     options.add_argument('--headless')
@@ -15,8 +17,16 @@ def proxyScrap():
     #ipp = dict(zip(ip,port))
     op = list(map(lambda x, y: x+':'+y, ip, port))
     browser.close()
-    return op[0]
+    return op
 
 if __name__ == "__main__":
-    i = proxyScrap()
-    print(i)
+    import time
+    #start = time.time()
+    #i=proxyScrap()
+    #print(i)
+    import joblib
+    from joblib import Parallel, delayed
+    start = time.time()
+    tester = Parallel(n_jobs=2,verbose=100)(delayed(proxyScrap)(i) for i in range(1))
+    print(tester)
+    print(time.time() - start)
