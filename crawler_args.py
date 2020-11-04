@@ -78,8 +78,8 @@ if __name__ == "__main__":
     #temp = {'date':datetime.today().strftime('%Y-%m-%d'),
     #        'data':op}
     #collection.insert_one(temp)
-    #titles = [getTitle(link) for link in links]
-    #with open('f1.txt','w') as f:
+    titles = [getTitle(link) for link in links]
+    #with open('insert_to_pg.txt','w') as f:
     #    for title in titles:
     #        f.write('%s\n'% title)
     #both = list(map(lambda x, y: x+':'+y, op, titles))

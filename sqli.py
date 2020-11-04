@@ -1,6 +1,10 @@
 import psycopg2
 from psycopg2 import Error
-
+from crawler_args import *
+def readfi():
+    with open('insert_to_pg.txt', 'r') as f:
+        op = f.read().splitlines()
+    return op
 try:
     connection = psycopg2.connect(user = "coutinho",
                                   password = "d3dx9",
@@ -10,15 +14,13 @@ try:
 
     cursor = connection.cursor()
     print(cursor)
-    prods = ['ryzen7', 'corsair16gb']
     #create_table_query = 'select * from products'
-    prices = [29000, 9000, 19000, 9000]
-    for k,p in enumerate(prices, start=1):
-        cursor.execute("INSERT INTO prices(pid, prices) VALUES(%s, %s)",(k,p,))
-    #create_table_query = '''create table test (nid serial primary key, name varchar(255));'''
-        #cur_obj = cursor.execute("INSERT INTO products(pname) VALUES(%s)",p)
+    #prices = [29000, 9000, 19000, 9000]
+    op = [scraper(k,link) for k,link in enumerate(links, start=1)]
+    print(op)
+    for k,v in enumerate(op, start=1): 
+        cursor.execute("INSERT INTO prices(pid, prices) VALUES(%s,%s)",(k,v,))
         connection.commit()
-
 except (Exception, psycopg2.DatabaseError) as error :
     print ("Error while creating PostgreSQL table", error)
 finally:
