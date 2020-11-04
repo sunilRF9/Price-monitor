@@ -21,7 +21,6 @@ def home():
     for k,i in enumerate(links, start=1):
         try:
             browser.get(i)
-            #print("opened site", i)
             data = browser.find_element_by_xpath(price_xpath)
             title = browser.find_element_by_xpath(title_xpath)
             print(data.text)
@@ -35,15 +34,11 @@ def home():
 
         except:
             browser.get(i)
-            #print("opened site", i)
             data = browser.find_element_by_xpath(deal_xpath)
             title = browser.find_element_by_xpath(title_xpath)
             print(data.text)
             print(title.text)
             price_dict[title.text] = str(data.text).strip()
-        #print(k,title.text,"-->",data.text)
-    #price_dict = json.loads(price_dict)
-    #print(price_dict)
             total = compute(price_dict)
             total_price["Total"] = total
             print("Total Cost -->",compute(price_dict))
