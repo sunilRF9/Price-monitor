@@ -4,8 +4,10 @@ import pandas as pd
 from psycopg2 import Error
 from datetime import date 
 from datetime import timedelta 
+
 today = date.today()
 yest = today - timedelta(days=1)
+
 def clean():
     d1 = []
     d2 = []
@@ -17,28 +19,42 @@ def clean():
                                       database = "pcbuild")
 
         cursor = connection.cursor()
-        ##Previous day
         for v in range(1,11):
+
+
+        ##Previous day
             cursor.execute(f'''
             select distinct prices from prices where pid = {v} AND timestamp >= '{str(yest)} 00:00:00' AND timestamp < '{str(yest)} 23:59:59'
             ''')
             row = cursor.fetchall()
-            d1.append(str(row).replace('[', '').replace(']','').replace('(','').replace(')','').replace(',',''))
-        ##Current day
-        for v in range(1,11):
+            #print("Yest",row)
+            # if a row as multiple price changes in a day, choose the lowest one
+            raow = min([i[0] for i in row])
+            d1.append(str(raow).replace('[', '').replace(']','').replace('(','').replace(')','').replace(',',''))
+            #print(d1)
+
+            ##Current day
             cursor.execute(f'''
             select distinct prices from prices where pid = {v} AND timestamp >= '{str(today)} 00:00:00' AND timestamp < '{str(today)} 23:59:59'
             ''')
             row = cursor.fetchall()
-            d2.append(str(row).replace('[', '').replace(']','').replace('(','').replace(')','').replace(',',''))
+            #print("Today", row)
+            # if a row as multiple price changes in a day, choose the lowest one
+            rmin = min([i[0] for i in row])
+            d2.append(str(rmin).replace('[', '').replace(']','').replace('(','').replace(')','').replace(',',''))
+            #print(d2)
+
             df1 = list(np.array(d1).astype(float))
             df2 = list(np.array(d2).astype(float))
+
             ndf1 = pd.DataFrame(df1)
             ndf1.index = ndf1.index + 1
             ndf1.columns = ["Prices"]
+
             ndf2 = pd.DataFrame(df2)
             ndf2.index = ndf2.index + 1
             ndf2.columns = ["Prices"]
+
     except Exception as e:
             print(e)
     #print(ndf1)
@@ -50,5 +66,5 @@ def calc_diff(ndf1, ndf2):
     return ndf2 - ndf1
 
 if __name__ == "__main__":
-    ndf1, ndf2 = clean()
-    print(calc_diff(ndf1, ndf2))
+    ndf1,ndf2 = clean()
+    print(calc_diff(ndf1,ndf2))
