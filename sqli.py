@@ -1,10 +1,11 @@
+import os
 import psycopg2
 from psycopg2 import Error
 from crawler_args import *
 
 try:
     connection = psycopg2.connect(user = "coutinho",
-                                  password = "d3dx9",
+                                  password = os.getenv('ARTIX_PASS'),
                                   host = "127.0.0.1",
                                   port = "5432",
                                   database = "pcbuild")

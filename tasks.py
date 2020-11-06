@@ -5,6 +5,7 @@ import pandas as pd
 from psycopg2 import Error
 from datetime import date 
 from datetime import timedelta 
+import os
 
 today = date.today()
 yest = today - timedelta(days=1)
@@ -21,7 +22,7 @@ def clean():
     d2 = []
     try:
         connection = psycopg2.connect(user = "coutinho",
-                                      password = "d3dx9",
+                                      password = os.getenv('ARTIX_PASS'),
                                       host = "127.0.0.1",
                                       port = "5432",
                                       database = "pcbuild")
