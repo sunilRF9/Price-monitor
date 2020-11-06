@@ -1,4 +1,5 @@
 import psycopg2
+from celery import Celery
 import numpy as np
 import pandas as pd
 from psycopg2 import Error
@@ -8,7 +9,11 @@ from datetime import timedelta
 today = date.today()
 yest = today - timedelta(days=1)
 
+app = Celery('tasks', backend='rpc://', broker='pyamqp://')
+
+@app.task
 def clean():
+
     d1 = []
     d2 = []
     try:
@@ -21,8 +26,7 @@ def clean():
         cursor = connection.cursor()
         for v in range(1,11):
 
-
-        ##Previous day
+            ##Previous day
             cursor.execute(f'''
             select distinct prices from prices where pid = {v} AND timestamp >= '{str(yest)} 00:00:00' AND timestamp < '{str(yest)} 23:59:59'
             ''')
@@ -57,14 +61,12 @@ def clean():
 
     except Exception as e:
             print(e)
-    #print(ndf1)
-    #print(ndf2)
-    return ndf1, ndf2
+    return calc_diff(ndf1,ndf2)
 
 def calc_diff(ndf1, ndf2):
     # Today's price - Yesterday's
-    return ndf2 - ndf1
+    res = ndf2 - ndf1
+    return res.to_json(orient='records')[1:-1].replace('},{', '} {')
 
 if __name__ == "__main__":
-    ndf1,ndf2 = clean()
-    print(calc_diff(ndf1,ndf2))
+    print(clean())

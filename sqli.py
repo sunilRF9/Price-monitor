@@ -1,6 +1,7 @@
 import psycopg2
 from psycopg2 import Error
 from crawler_args import *
+
 try:
     connection = psycopg2.connect(user = "coutinho",
                                   password = "d3dx9",
@@ -14,6 +15,7 @@ try:
         cursor.execute("INSERT INTO prices(pid, prices) VALUES(%s,%s)",(k,v,))
         print(f"Wrote to {v} Db")
         connection.commit()
+
 except (Exception, psycopg2.DatabaseError) as error :
     print ("Error while creating PostgreSQL table", error)
 finally:
