@@ -9,3 +9,4 @@ celerybeat-schedule
 cache_redis.py
 mongo.yaml
 tests.py
+proxyscraper.py
