@@ -1,16 +1,15 @@
 import psycopg2
-from celery import Celery
 import numpy as np
 import pandas as pd
 from psycopg2 import Error
 from datetime import date 
 from datetime import timedelta 
+from celery import Celery
+from celery.schedules import crontab
 import os
-
 today = date.today()
 yest = today - timedelta(days=1)
 app = Celery('tasks', backend='rpc://', broker='pyamqp://')
-
 
 @app.task
 def clean():

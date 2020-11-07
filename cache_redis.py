@@ -1,5 +1,5 @@
 import redis
-redis = redis.Redis()
+redis = redis.Redis(decode_responses=True)
 
 def setcache(title, price):
     return redis.setex(title, 3600, price)
