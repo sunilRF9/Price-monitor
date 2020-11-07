@@ -1,9 +1,7 @@
 from utils import links, getUserAgent, getProxy, compute
 from pprint import pprint
 from datetime import datetime
-from pymongo import MongoClient
-from cache_redis import setcache, getCache
-import concurrent.futures
+#from cache_redis import setcache, getCache
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -25,14 +23,14 @@ def scraper(k,link):
         title = browser.find_element_by_xpath(title_xpath)
         price_dict[title.text] = str(data.text).strip()
         product_titles.append(title.text)
-        setcache(k, data.text)
+        #setcache(k, data.text)
     except:
         browser.get(str(link))
         data = browser.find_element_by_xpath(deal_xpath)
         title = browser.find_element_by_xpath(title_xpath)
         price_dict[title.text] = str(data.text).strip()
         product_titles.append(title.text)
-        setcache(k, data.text)
+        #setcache(k, data.text)
     return compute(price_dict)
 
 if __name__ == "__main__":
