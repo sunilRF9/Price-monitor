@@ -1,5 +1,5 @@
 from tasks import clean
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     get_jwt_identity
@@ -11,7 +11,7 @@ app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SEC')
 jwt = JWTManager(app)
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/token', methods=['POST'])
 def login():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
@@ -30,7 +30,7 @@ def login():
     return jsonify(access_token=access_token), 200
 
 
-@app.route('/protected', methods=['GET'])
+@app.route('/prices', methods=['GET'])
 @jwt_required
 def protected():
     # Access the identity of the current user with get_jwt_identity
